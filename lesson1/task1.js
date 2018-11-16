@@ -19,67 +19,73 @@ var toCamelCase = function (str) {
     return camelString
 
 }
+
+var tableToObject = function (table) {
+
 // итоговый объект, который будем выводить в console.table
-var data = {}
+    var data = {}
 // выбираем все строки
-var rows = document.getElementsByTagName('tr')
+    var rows = table.getElementsByTagName('tr')
 // объект с типами ячеек
-var attributeCol = {}
+    var attributeCol = {}
 
 // собираем объект, который будет содержать названия столбцов
-for (var i = 0; i < 1; ++i)
-{
-    head = rows[i].getElementsByTagName("th")
+    for (var i = 0; i < 1; ++i)
+    {
+        head = rows[i].getElementsByTagName("th")
 
-    var colHead = {}
+        var colHead = {}
 
-    var colAttr = {}
+        var colAttr = {}
 
-    for (var j = 0; j < head.length; j++) {
-        colHead[j] = toCamelCase(head[j].textContent)
-        colAttr[j] = head[j].getAttribute('data-type')
+        for (var j = 0; j < head.length; j++) {
+            colHead[j] = toCamelCase(head[j].textContent)
+            colAttr[j] = head[j].getAttribute('data-type')
+        }
+
+        // шапка
+        head = colHead
+        // атрибуты
+        attributeCol = colAttr
     }
 
-    // шапка
-    head = colHead
-    // атрибуты
-    attributeCol = colAttr
-}
-
 // выводим все строки таблицы
-for (var i = 1; i < rows.length; ++i)
-{
-    var col = rows[i].getElementsByTagName("td")
+    for (var i = 1; i < rows.length; ++i)
+    {
+        var col = rows[i].getElementsByTagName("td")
 
-    var colObj = {}
+        var colObj = {}
 
-    // получаем каждую ячейку
-    for(var j = 0; j < col.length; j++) {
+        // получаем каждую ячейку
+        for(var j = 0; j < col.length; j++) {
 
-        // делаем проверку на тип ячейки
-        if(attributeCol[j] == 'int') {
+            // делаем проверку на тип ячейки
+            if(attributeCol[j] == 'int') {
 
-            colObj[head[j]] = parseInt(col[j].textContent)
+                colObj[head[j]] = parseInt(col[j].textContent)
 
-        } else if(attributeCol[j] == 'float') {
+            } else if(attributeCol[j] == 'float') {
 
-            colObj[head[j]] = parseFloat(col[j].textContent)
+                colObj[head[j]] = parseFloat(col[j].textContent)
 
-        } else if(attributeCol[j] == 'date') {
+            } else if(attributeCol[j] == 'date') {
 
-            colObj[head[j]] = new Date(col[j].textContent)
+                colObj[head[j]] = new Date(col[j].textContent)
 
-        } else {
+            } else {
 
-            colObj[head[j]] = col[j].textContent
+                colObj[head[j]] = col[j].textContent
+
+            }
+
 
         }
 
+        data[i - 1] = colObj
 
     }
 
-    data[i - 1] = colObj
-
+    console.table(data)
 }
 
-console.table(data)
+tableToObject(document.getElementsByTagName('table')[0])
